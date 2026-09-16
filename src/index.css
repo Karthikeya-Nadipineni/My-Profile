@@ -1,0 +1,294 @@
+/* KARTHIKEYA NADIPINENI - PREMIUM PORTFOLIO */
+
+:root {
+  --bg-primary: #020704;
+  --bg-secondary: #060f08;
+  --bg-card: rgba(5, 18, 9, 0.9);
+  --bg-glass-card: rgba(3, 12, 6, 0.88);
+  --neon-green: #00ff66;
+  --neon-bright: #39ff14;
+  --neon-dim: #00cc52;
+  --neon-dark: #006628;
+  --border-subtle: rgba(0, 255, 102, 0.12);
+  --border-mid: rgba(0, 255, 102, 0.25);
+  --border-glow: rgba(0, 255, 102, 0.5);
+  --accent-cyan: #00ff66;
+  --accent-purple: #39ff14;
+  --accent-emerald: #00ff66;
+  --accent-amber: #a3e635;
+  --text-main: #f0fdf4;
+  --text-muted: #a7f3d0;
+  --text-dim: #6ee7b7;
+  --text-faint: #34d399;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 24px 60px -16px rgba(0, 0, 0, 0.9);
+  --shadow-glow: 0 0 40px rgba(0, 255, 102, 0.2);
+  --section-pad: 7rem 0;
+  --radius-card: 1.25rem;
+  --radius-sm: 0.6rem;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; color-scheme: dark; font-size: 16px; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 255, 102, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(57, 255, 20, 0.04) 0%, transparent 60%);
+}
+
+::selection { background: rgba(0, 255, 102, 0.3); color: #fff; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #00ff66, #39ff14); border-radius: 10px; }
+
+/* GPU compositing layer for smooth transforms */
+.ambient-orb, .background-grid {
+  transform: translateZ(0);
+}
+
+.background-grid {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(to right, rgba(0, 255, 102, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 102, 0.025) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 50%, #000 60%, transparent 100%);
+}
+
+.ambient-orb {
+  position: fixed; border-radius: 50%; 
+  /* Reduced blur for perf — 120px is still gorgeous, 160px was GPU-heavy */
+  filter: blur(100px);
+  pointer-events: none; z-index: 0;
+  /* Slow down animation, easier on GPU */
+  animation: orbFloat 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(0, 255, 102, 0.15) 0%, transparent 70%); top: -150px; left: -150px; opacity: 0.7; }
+.orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(57, 255, 20, 0.1) 0%, transparent 70%); bottom: 5%; right: -120px; animation-delay: -9s; opacity: 0.7; }
+
+@keyframes orbFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(40px, 30px) scale(1.08); }
+  66%  { transform: translate(-20px, 50px) scale(0.97); }
+  100% { transform: translate(20px, -30px) scale(1.04); }
+}
+
+.scanlines {
+  position: fixed; inset: 0; pointer-events: none; z-index: 99;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+  opacity: 0.35;
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotateBorderGlow { to { --border-angle: 360deg; } }
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+
+.glass-panel {
+  background: var(--bg-glass-card);
+  /* Reduced backdrop blur — 14px looks identical but is much faster */
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(0,255,102,0.06);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  /* NO will-change by default — only promote when animating */
+}
+
+/* Rotating border beam — PAUSED by default, only plays on hover */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--border-angle), transparent 0deg, transparent 210deg, rgba(0,255,102,0.1) 270deg, rgba(57,255,20,0.7) 330deg, #00ff66 355deg, #39ff14 360deg);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  /* KEY PERF FIX: paused when idle, only runs on hover */
+  animation: rotateBorderGlow 3s linear infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Background glow — PAUSED by default */
+.glass-panel::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: calc(var(--radius-card) + 5px);
+  background: conic-gradient(from var(--border-angle), transparent 0deg, transparent 200deg, rgba(0,255,102,0.08) 255deg, rgba(57,255,20,0.3) 310deg, rgba(0,255,102,0.5) 350deg, rgba(57,255,20,0.2) 360deg);
+  z-index: -1;
+  opacity: 0;
+  filter: blur(16px);
+  transition: opacity 0.35s ease;
+  animation: rotateBorderGlow 3s linear infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.glass-panel:hover {
+  border-color: var(--border-mid);
+  box-shadow: 0 0 40px rgba(0,255,102,0.16), 0 28px 70px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(0,255,102,0.1);
+  transform: translateY(-4px) scale(1.012);
+  will-change: transform;
+}
+
+/* Start the animation only when hovered */
+.glass-panel:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.glass-panel:hover::after {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.glass-panel.no-rotate::before,
+.glass-panel.no-rotate::after { display: none !important; animation: none !important; }
+
+.glass-panel.no-rotate:hover {
+  border-color: var(--border-mid);
+  box-shadow: 0 0 25px rgba(0,255,102,0.13), var(--shadow-card);
+  transform: translateY(-4px) scale(1.012);
+  will-change: transform;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, #d1fae5 50%, var(--neon-green) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #00ff66 0%, #39ff14 55%, #a3e635 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 18px rgba(0,255,102,0.45));
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.875rem 1.875rem; border-radius: 0.6rem;
+  font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;
+  letter-spacing: 0.05em; text-decoration: none; cursor: pointer;
+  border: 1.5px solid var(--neon-green);
+  background: linear-gradient(135deg, #00e85a, #39ff14);
+  color: #020704;
+  box-shadow: 0 0 30px rgba(0,255,102,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative; overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 55px rgba(0,255,102,0.75), 0 10px 24px rgba(0,0,0,0.5);
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.875rem 1.875rem; border-radius: 0.6rem;
+  font-family: var(--font-mono); font-weight: 600; font-size: 0.9rem;
+  text-decoration: none; cursor: pointer;
+  background: rgba(0, 255, 102, 0.06); color: var(--neon-green);
+  border: 1.5px solid var(--border-mid);
+  backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-secondary:hover {
+  background: rgba(0,255,102,0.1); border-color: var(--neon-green);
+  box-shadow: 0 0 28px rgba(0,255,102,0.25); transform: translateY(-2px);
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.3rem 0.9rem; border-radius: 100px;
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  background: rgba(0,255,102,0.08); color: var(--neon-green);
+  border: 1px solid rgba(0,255,102,0.28);
+  box-shadow: 0 0 12px rgba(0,255,102,0.1), inset 0 1px 0 rgba(0,255,102,0.06);
+}
+
+.badge.purple, .badge.emerald {
+  background: rgba(57,255,20,0.08); color: #39ff14; border-color: rgba(57,255,20,0.28);
+}
+
+.skill-item {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.72rem 0; font-size: 0.9rem; color: var(--text-muted);
+  border-bottom: 1px solid rgba(0,255,102,0.06);
+  transition: color 0.2s ease, padding-left 0.2s ease;
+  cursor: default;
+}
+.skill-item:last-child { border-bottom: none; }
+.skill-item:hover { color: var(--text-main); padding-left: 0.4rem; }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,102,0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(0,255,102,0); }
+}
+
+.neon-input {
+  width: 100%; padding: 0.9rem 1.1rem; border-radius: var(--radius-sm);
+  background: rgba(0,0,0,0.45); border: 1px solid var(--border-subtle);
+  color: var(--text-main); font-family: var(--font-body); font-size: 0.93rem;
+  outline: none; transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  caret-color: var(--neon-green);
+}
+.neon-input:focus {
+  border-color: var(--border-mid);
+  box-shadow: 0 0 0 3px rgba(0,255,102,0.08), 0 0 20px rgba(0,255,102,0.1);
+}
+.neon-input::placeholder { color: rgba(134,239,172,0.3); }
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(0,255,102,0.6), 0 0 40px rgba(0,255,102,0.3);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container { padding: 0 1.25rem; }
+}
+
+/* ─ Scrolling Performance ──────────────────────── */
+/* Sections below the fold render lazily */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 700px;
+}
+
+/* First section and hero never lazy (above fold) */
+section:first-of-type {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+
+/* Smooth pointer events on mobile */
+* { touch-action: pan-y; }
