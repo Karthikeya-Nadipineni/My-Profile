@@ -21,12 +21,18 @@ export default function Interactive3DBackground() {
     camera.position.z = 24;
 
     // Renderer — antialias off for background (invisible difference, big perf gain)
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    // Cap at 1.5 — anything higher is imperceptible for background geometry
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.powerPreference = 'high-performance';
-    container.appendChild(renderer.domElement);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      // Cap at 1.5 — anything higher is imperceptible for background geometry
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.powerPreference = 'high-performance';
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn("WebGL not supported for background canvas:", err);
+      return;
+    }
 
     const backgroundAssetsGroup = new THREE.Group();
     scene.add(backgroundAssetsGroup);
@@ -307,6 +313,7 @@ export default function Interactive3DBackground() {
     // Animation Loop — throttled to ~50fps with delta check
     let lastTime = 0;
     let animId;
+    const clock = new THREE.Clock();
 
     const animate = (now) => {
       animId = requestAnimationFrame(animate);
@@ -343,7 +350,7 @@ export default function Interactive3DBackground() {
       const scrollOffset = scrollY * 0.006;
       camera.position.y = -scrollOffset * 1.2;
 
-      renderer.render(scene, camera);
+      if (renderer) renderer.render(scene, camera);
     };
 
     animate(0);
@@ -353,10 +360,12 @@ export default function Interactive3DBackground() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('visibilitychange', handleVisibility);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (animId) cancelAnimationFrame(animId);
+      if (renderer) {
+        renderer.dispose();
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
       }
     };
   }, []);

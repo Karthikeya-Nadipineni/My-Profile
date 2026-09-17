@@ -16,10 +16,16 @@ export default function PixelFaceMesh() {
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
     camera.position.z = 7.6;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn("WebGL not supported for PixelFaceMesh:", err);
+      return;
+    }
 
     const group = new THREE.Group();
     scene.add(group);
@@ -167,7 +173,7 @@ export default function PixelFaceMesh() {
         particlesMesh.scale.set(breath, breath, breath);
       }
 
-      renderer.render(scene, camera);
+      if (renderer) renderer.render(scene, camera);
     };
 
     animate();
@@ -176,10 +182,12 @@ export default function PixelFaceMesh() {
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseenter', handleMouseEnter);
       container.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(animId);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (animId) cancelAnimationFrame(animId);
+      if (renderer) {
+        renderer.dispose();
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
       }
     };
   }, []);

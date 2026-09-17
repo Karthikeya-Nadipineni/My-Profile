@@ -211,14 +211,14 @@ export default function App() {
           </div>
 
           <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-            {[["#about","ABOUT"],["#skills","SKILLS"],["#projects","WORK"]].map(([href, label]) => (
+            {[["#about", "ABOUT"], ["#skills", "SKILLS"], ["#projects", "WORK"]].map(([href, label]) => (
               <a key={href} href={href} style={{
                 color: "var(--text-muted)", textDecoration: "none",
                 fontSize: "0.8rem", fontFamily: "var(--font-mono)", letterSpacing: "0.1em",
                 transition: "color 0.2s ease"
               }}
-              onMouseEnter={e => e.target.style.color = "#00ff66"}
-              onMouseLeave={e => e.target.style.color = "var(--text-muted)"}>
+                onMouseEnter={e => e.target.style.color = "#00ff66"}
+                onMouseLeave={e => e.target.style.color = "var(--text-muted)"}>
                 {label}
               </a>
             ))}
@@ -291,7 +291,7 @@ export default function App() {
                     <Cpu size={13} /> IDENTITY_MATRIX
                   </span>
                   <div style={{ display: "flex", gap: "5px" }}>
-                    {["#00ff66","#39ff14","#a3e635"].map(c => (
+                    {["#00ff66", "#39ff14", "#a3e635"].map(c => (
                       <div key={c} style={{ width: "7px", height: "7px", borderRadius: "50%", background: c, boxShadow: `0 0 5px ${c}` }} />
                     ))}
                   </div>
@@ -307,7 +307,7 @@ export default function App() {
                     CS Engineer &bull; Automation &amp; DevOps
                   </div>
                   <div style={{ display: "flex", justifyContent: "center", gap: "0.55rem", marginTop: "0.85rem", flexWrap: "wrap" }}>
-                    {["Python","Docker","K8s","Jenkins"].map(t => (
+                    {["Python", "Docker", "K8s", "Jenkins"].map(t => (
                       <span key={t} style={{ fontSize: "0.65rem", padding: "0.2rem 0.55rem", borderRadius: "5px", background: "rgba(0,255,102,0.08)", color: "var(--text-dim)", fontFamily: "var(--font-mono)", border: "1px solid rgba(0,255,102,0.15)" }}>{t}</span>
                     ))}
                   </div>
@@ -538,7 +538,7 @@ export default function App() {
             &copy; {new Date().getFullYear()} Nadipineni Karthikeya &mdash; React &amp; Three.js
           </div>
           <div style={{ display: "flex", gap: "1.5rem" }}>
-            {[["https://github.com/Karthikeya-Nadipineni","GitHub"],["#about","About"],["#skills","Skills"],["#contact","Contact"]].map(([href, label]) => (
+            {[["https://github.com/Karthikeya-Nadipineni", "GitHub"], ["#about", "About"], ["#skills", "Skills"], ["#contact", "Contact"]].map(([href, label]) => (
               <a key={href} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}
                 style={{ color: "var(--text-dim)", textDecoration: "none", fontSize: "0.78rem", fontFamily: "var(--font-mono)", transition: "color 0.2s ease" }}
                 onMouseEnter={e => e.target.style.color = "var(--neon-green)"}
